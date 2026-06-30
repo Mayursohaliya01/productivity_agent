@@ -1,9 +1,9 @@
 """Shared API client for Streamlit frontend."""
-
+import os
 import requests
 import streamlit as st
 
-API_BASE = "http://localhost:8001"
+API_BASE = os.getenv("API_BASE_URL", "http://localhost:8001")
 
 def api_get(path: str) -> requests.Response:
     token = st.session_state.get("token", "")
