@@ -1,8 +1,0 @@
-WARNING: Ignoring invalid distribution ~ip (C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages)
-Requirement already satisfied: pydantic in C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages (2.13.4)
-Requirement already satisfied: annotated-types>=0.6.0 in C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages (from pydantic) (0.7.0)
-Requirement already satisfied: pydantic-core==2.46.4 in C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages (from pydantic) (2.46.4)
-Requirement already satisfied: typing-extensions>=4.14.1 in C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages (from pydantic) (4.15.0)
-Requirement already satisfied: typing-inspection>=0.4.2 in C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages (from pydantic) (0.4.2)
-WARNING: Ignoring invalid distribution ~ip (C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages)
-WARNING: Ignoring invalid distribution ~ip (C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages)
