@@ -5,7 +5,6 @@ from typing import TypedDict, List
 from datetime import date, timedelta
 
 from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.sqlite import SqliteSaver
 
 from .config import settings
 
@@ -279,9 +278,6 @@ def route_by_mode(state: AgentState) -> str:
 
 
 def _build_graph():
-    conn = sqlite3.connect(settings.CHECKPOINT_DB, check_same_thread=False)
-    memory = SqliteSaver(conn)
-
     builder = StateGraph(AgentState)
 
     builder.add_node("router", lambda s: s)
@@ -303,7 +299,7 @@ def _build_graph():
     builder.add_edge("eod_draft", "planner")
     builder.add_edge("planner", END)
 
-    return builder.compile(checkpointer=memory)
+    return builder.compile()
 
 
 # initialised once when the backend starts up

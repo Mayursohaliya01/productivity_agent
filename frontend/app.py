@@ -154,36 +154,45 @@ def show_login():
 
     with tab_login:
         with st.form("login_form"):
-            username = st.text_input("Username", placeholder="Enter your username")
-            password = st.text_input("Password", type="password", placeholder="Enter your password")
+            username = st.text_input("Username", placeholder="Enter your username", key="login_username")
+            password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
             submitted = st.form_submit_button("Login", use_container_width=True)
 
         if submitted:
             if not username or not password:
                 st.error("Fill in both fields.")
             else:
-                resp = requests.post(
-                    f"{API_BASE}/auth/login",
-                    json={"username": username, "password": password},
-                    timeout=10,
-                )
-                if resp.status_code == 200:
-                    data = resp.json()
-                    _clear_logout_flag()
-                    st.session_state["token"] = data["access_token"]
-                    st.session_state["user_id"] = data["user_id"]
-                    st.session_state["username"] = data["username"]
-                    st.session_state["_auth_validated"] = True
-                    st.session_state["_validated_token"] = data["access_token"]
-                    st.rerun()
-                else:
-                    st.error("Wrong username or password.")
+                try:
+                    resp = requests.post(
+                        f"{API_BASE}/auth/login",
+                        json={"username": username, "password": password},
+                        timeout=10,
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        _clear_logout_flag()
+                        st.session_state["token"] = data["access_token"]
+                        st.session_state["user_id"] = data["user_id"]
+                        st.session_state["username"] = data["username"]
+                        st.session_state["_auth_validated"] = True
+                        st.session_state["_validated_token"] = data["access_token"]
+                        st.rerun()
+                    else:
+                        try:
+                            detail = resp.json().get("detail", "Wrong username or password.")
+                        except:
+                            detail = "Wrong username or password."
+                        st.error(detail)
+                except requests.exceptions.ConnectionError:
+                    st.error("❌ Cannot connect to backend. Make sure the backend server is running on port 8001.")
+                except Exception as e:
+                    st.error(f"Login error: {str(e)}")
 
     with tab_register:
         with st.form("register_form"):
-            new_email = st.text_input("Email", placeholder="you@example.com")
-            new_username = st.text_input("Username", placeholder="Choose a username")
-            new_password = st.text_input("Password", type="password", placeholder="Min. 6 characters")
+            new_email = st.text_input("Email", placeholder="you@example.com", key="reg_email")
+            new_username = st.text_input("Username", placeholder="Choose a username", key="reg_username")
+            new_password = st.text_input("Password", type="password", placeholder="Min. 6 characters", key="reg_password")
             submitted_reg = st.form_submit_button("Create Account", use_container_width=True)
 
         if submitted_reg:
@@ -192,24 +201,32 @@ def show_login():
             elif len(new_password) < 6:
                 st.error("Password must be at least 6 characters.")
             else:
-                resp = requests.post(
-                    f"{API_BASE}/auth/register",
-                    json={"email": new_email, "username": new_username, "password": new_password},
-                    timeout=10,
-                )
-                if resp.status_code == 201:
-                    data = resp.json()
-                    _clear_logout_flag()
-                    st.session_state["token"] = data["access_token"]
-                    st.session_state["user_id"] = data["user_id"]
-                    st.session_state["username"] = data["username"]
-                    st.session_state["_auth_validated"] = True
-                    st.session_state["_validated_token"] = data["access_token"]
-                    st.success("Account created!")
-                    st.rerun()
-                else:
-                    detail = resp.json().get("detail", "Registration failed.")
-                    st.error(detail)
+                try:
+                    resp = requests.post(
+                        f"{API_BASE}/auth/register",
+                        json={"email": new_email, "username": new_username, "password": new_password},
+                        timeout=10,
+                    )
+                    if resp.status_code == 201:
+                        data = resp.json()
+                        _clear_logout_flag()
+                        st.session_state["token"] = data["access_token"]
+                        st.session_state["user_id"] = data["user_id"]
+                        st.session_state["username"] = data["username"]
+                        st.session_state["_auth_validated"] = True
+                        st.session_state["_validated_token"] = data["access_token"]
+                        st.success("Account created!")
+                        st.rerun()
+                    else:
+                        try:
+                            detail = resp.json().get("detail", f"Registration failed: {resp.status_code}")
+                        except:
+                            detail = f"Server error: {resp.status_code}. Please try again."
+                        st.error(detail)
+                except requests.exceptions.ConnectionError:
+                    st.error("❌ Cannot connect to backend. Make sure the backend server is running on port 8001.")
+                except Exception as e:
+                    st.error(f"Something went wrong: {str(e)}")
 
 
 # ─── MAIN PAGES ──────────────────────────────────────────────────────────────

@@ -5,7 +5,6 @@ import streamlit as st
 
 API_BASE = "http://localhost:8001"
 
-
 def api_get(path: str) -> requests.Response:
     token = st.session_state.get("token", "")
     return requests.get(
